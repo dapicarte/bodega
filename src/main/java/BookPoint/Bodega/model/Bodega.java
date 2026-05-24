@@ -23,6 +23,5 @@ public class Bodega {
     private Integer fechaActualizacion;
     @Column(nullable = false)
     private Integer stockActual;
-    //private List<Producto> producto;
 
 }
