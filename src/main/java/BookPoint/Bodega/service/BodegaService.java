@@ -2,6 +2,7 @@ package BookPoint.Bodega.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import BookPoint.Bodega.model.Bodega;
 import BookPoint.Bodega.repository.BodegaRepository;
@@ -12,8 +13,10 @@ import jakarta.transaction.Transactional;
 public class BodegaService {
     @Autowired
     private BodegaRepository bodegaRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
-    public Bodega crear(Bodega bodega) {
+    public Bodega crearBodega(Bodega bodega) {
         return bodegaRepository.save(bodega);
     }
 }
