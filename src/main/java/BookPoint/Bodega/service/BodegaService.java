@@ -68,24 +68,34 @@ public class BodegaService {
             }
         } catch (Exception e) {
             System.out.println("*************************");
-            System.out.println("⚠️ Sucursal no disponible: " + e.getMessage());
+            System.out.println("Sucursal no disponible: " + e.getMessage());
             System.out.println("*************************");
         }
     // Conexion a Inventario
-        try {
-            String urlInventario = "http://localhost:8091/api/v1/inventario/" + bodega.getIdInventario();
-            InventarioDTO inventario = restTemplate.getForObject(urlInventario, InventarioDTO.class);
-            if (inventario != null) {
-                dto.setStockDisponible(inventario.getStockDisponible());
-                System.out.println("*************************");
-                System.out.println("Inventario encontrado: " + inventario);
-                System.out.println("*************************");
+        // try {
+        //     String urlInventario = "http://localhost:8091/api/v1/inventario/" + bodega.getIdInventario();
+        //     InventarioDTO inventario = restTemplate.getForObject(urlInventario, InventarioDTO.class);
+        //     if (inventario != null) {
+        //         dto.setCapacidadOcupada(inventario.getStockDisponible());
+        //         System.out.println("*************************");
+        //         System.out.println("Inventario encontrado: " + inventario);
+        //         System.out.println("*************************");
+        //     }
+        // } catch (Exception e) {
+        //     System.out.println("*************************");
+        //     System.out.println("Inventario no disponible: " + e.getMessage());
+        //     System.out.println("*************************");
+        // }
+            try {
+                String urlInventario = "http://localhost:8091/api/v1/inventario/totalStock";
+                String totalStock = restTemplate.getForObject(urlInventario, String.class);
+                if (totalStock != null) {
+                    Integer total = Integer.parseInt(totalStock.replace("Total de productos: ", ""));
+                    dto.setCapacidadOcupada(total);
+                }
+            } catch (Exception e) {
+                System.out.println("Inventario no disponible: " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.out.println("*************************");
-            System.out.println("⚠️ Inventario no disponible: " + e.getMessage());
-            System.out.println("*************************");
-        }
 
         return dto;
     }

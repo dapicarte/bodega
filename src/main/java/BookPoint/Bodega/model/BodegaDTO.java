@@ -12,6 +12,6 @@ public class BodegaDTO {
     // de sucursal
     private String direccionSucursal;
     // de inventario
-    private Integer stockDisponible;
+    private Integer capacidadOcupada;
     
 }
