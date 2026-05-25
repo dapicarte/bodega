@@ -1,10 +1,16 @@
 package BookPoint.Bodega.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import BookPoint.Bodega.model.Bodega;
+import BookPoint.Bodega.model.BodegaDTO;
+import BookPoint.Bodega.model.InventarioDTO;
+import BookPoint.Bodega.model.SucursalDTO;
 import BookPoint.Bodega.repository.BodegaRepository;
 import jakarta.transaction.Transactional;
 
@@ -17,6 +23,58 @@ public class BodegaService {
     private RestTemplate restTemplate;
 
     public Bodega crearBodega(Bodega bodega) {
+        System.out.println("*************************");
+        System.out.println(bodega);
+        System.out.println("*************************");
         return bodegaRepository.save(bodega);
+    }
+
+    public List<Bodega> listarBodegas() {
+        return bodegaRepository.findAll();
+    }
+
+    public BodegaDTO obtenerBodegaDTO(Long idBodega) {
+        Bodega bodega = bodegaRepository.findById(idBodega).orElse(null);
+        if (bodega == null) return null;
+
+        // 2. Arma el DTO con los datos propios de Bodega
+        BodegaDTO dto = new BodegaDTO();
+        dto.setIdBodega(bodega.getIdBodega());
+        dto.setNombreBodega(bodega.getNombreBodega());
+        dto.setCapacidadMax(bodega.getCapacidadMax());
+        dto.setActiva(bodega.isActiva());
+
+    // Conexion a Sucursal
+        try {
+            String urlSucursal = "http://localhost:8092/api/v1/sucursales/" + bodega.getIdSucursal();
+            SucursalDTO sucursal = restTemplate.getForObject(urlSucursal, SucursalDTO.class);
+            if (sucursal != null) {
+                dto.setDireccionSucursal(sucursal.getDireccionSucursal());
+                System.out.println("*************************");
+                System.out.println("Sucursal encontrada: " + sucursal);
+                System.out.println("*************************");
+            }
+        } catch (Exception e) {
+            System.out.println("*************************");
+            System.out.println("⚠️ Sucursal no disponible: " + e.getMessage());
+            System.out.println("*************************");
+        }
+    // Conexion a Inventario
+        try {
+            String urlInventario = "http://localhost:8091/api/v1/inventario/" + bodega.getIdInventario();
+            InventarioDTO inventario = restTemplate.getForObject(urlInventario, InventarioDTO.class);
+            if (inventario != null) {
+                dto.setStockDisponible(inventario.getStockDisponible());
+                System.out.println("*************************");
+                System.out.println("Inventario encontrado: " + inventario);
+                System.out.println("*************************");
+            }
+        } catch (Exception e) {
+            System.out.println("*************************");
+            System.out.println("⚠️ Inventario no disponible: " + e.getMessage());
+            System.out.println("*************************");
+        }
+
+        return dto;
     }
 }

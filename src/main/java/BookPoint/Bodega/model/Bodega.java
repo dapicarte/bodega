@@ -1,5 +1,7 @@
 package BookPoint.Bodega.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,10 +20,20 @@ import lombok.NoArgsConstructor;
 public class Bodega {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(nullable = false)
-    private Integer fechaActualizacion;
-    @Column(nullable = false)
-    private Integer stockActual;
+    private Long idBodega;
 
+    @Column(nullable = false)
+    private String nombreBodega;
+
+    @Column(nullable = false)
+    private Integer capacidadMax;
+    
+    @Column(nullable = false)
+    private boolean activa;
+
+    @Column(nullable = true)
+    private Long idSucursal;
+
+    @Column(nullable = true)
+    private Long idInventario;
 }
