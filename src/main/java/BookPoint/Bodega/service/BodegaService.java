@@ -33,6 +33,18 @@ public class BodegaService {
         return bodegaRepository.findAll();
     }
 
+    public Optional<Bodega> findById(Long id) {
+        return bodegaRepository.findById(id);
+    }
+
+    public boolean eliminarBodega(Long id) {
+        if (bodegaRepository.existsById(id)) {
+            bodegaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     public BodegaDTO obtenerBodegaDTO(Long idBodega) {
         Bodega bodega = bodegaRepository.findById(idBodega).orElse(null);
         if (bodega == null) return null;

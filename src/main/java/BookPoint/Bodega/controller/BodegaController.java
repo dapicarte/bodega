@@ -3,6 +3,9 @@ package BookPoint.Bodega.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,17 +24,46 @@ public class BodegaController {
     private BodegaService bodegaService;
     
     @PostMapping
-    public Bodega crearBodega(@RequestBody Bodega bodega) {
-        return bodegaService.crearBodega(bodega);
+    public ResponseEntity<?> crearBodega(@RequestBody Bodega bodega) {
+        try {
+            return new ResponseEntity<>(bodegaService.crearBodega(bodega), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al crear la bodega", HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping
-    public List<Bodega> listarBodegas() {
-        return bodegaService.listarBodegas();
+    public ResponseEntity<?> listarBodegas() {
+        List<Bodega> bodegas = bodegaService.listarBodegas();
+        if (bodegas.isEmpty()) {
+            return new ResponseEntity<>("No existen bodegas registradas", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(bodegas, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerBodega(@PathVariable Long id) {
+        Bodega buscado = bodegaService.findById(id).orElse(null);
+        if (buscado == null) {
+            return new ResponseEntity<>("Bodega con id " + id + " no existe", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(buscado, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/detalle")
-    public BodegaDTO obtenerDetalle(@PathVariable Long id) {
-        return bodegaService.obtenerBodegaDTO(id);
+    public ResponseEntity<?> obtenerDetalle(@PathVariable Long id) {
+        BodegaDTO dto = bodegaService.obtenerBodegaDTO(id);
+        if (dto == null) {
+            return new ResponseEntity<>("Bodega con id " + id + " no existe", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarBodega(@PathVariable Long id) {
+        if (bodegaService.eliminarBodega(id)) {
+            return new ResponseEntity<>("Bodega con id " + id + " eliminada correctamente", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Bodega con id " + id + " no existe", HttpStatus.NOT_FOUND);
     }
 }
