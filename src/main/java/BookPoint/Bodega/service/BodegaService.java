@@ -1,5 +1,6 @@
 package BookPoint.Bodega.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +73,7 @@ public class BodegaService {
         }
     // Conexion a Inventario
             try {
-                String urlInventario = "http://localhost:8091/api/v1/inventario/totalStock";
+                String urlInventario = "http://localhost:8091/api/v1/inventario/stockPorBodega/"+bodega.getIdBodega();
                 String totalStock = restTemplate.getForObject(urlInventario, String.class);
                 if (totalStock != null) {
                     Integer total = Integer.parseInt(totalStock.replace("Total de productos: ", ""));
@@ -83,5 +84,42 @@ public class BodegaService {
             }
 
         return dto;
+    }
+
+    public List<BodegaDTO> listarBodegasDTO() {
+        List<Bodega> bodegas = bodegaRepository.findAll();
+        List<BodegaDTO> lista = new ArrayList<>();
+
+        for (Bodega bodega : bodegas) {
+            BodegaDTO dto = new BodegaDTO();
+            dto.setIdBodega(bodega.getIdBodega());
+            dto.setNombreBodega(bodega.getNombreBodega());
+            dto.setCapacidadMax(bodega.getCapacidadMax());
+            dto.setActiva(bodega.isActiva());
+
+            try {
+                String urlSucursal = "http://localhost:8092/api/v1/sucursales/" + bodega.getIdSucursal();
+                SucursalDTO sucursal = restTemplate.getForObject(urlSucursal, SucursalDTO.class);
+                if (sucursal != null) {
+                    dto.setDireccionSucursal(sucursal.getDireccionSucursal());
+                }
+            } catch (Exception e) {
+                System.out.println("Sucursal no disponible: " + e.getMessage());
+            }
+
+            try {
+                String urlInventario = "http://localhost:8091/api/v1/inventario/stockPorBodega/" + bodega.getIdBodega();
+                String totalStock = restTemplate.getForObject(urlInventario, String.class);
+                if (totalStock != null) {
+                    Integer total = Integer.parseInt(totalStock.replace("Total de productos: ", ""));
+                    dto.setCapacidadOcupada(total);
+                }
+            } catch (Exception e) {
+                System.out.println("Inventario no disponible: " + e.getMessage());
+            }
+
+            lista.add(dto);
+        }
+        return lista;
     }
 }

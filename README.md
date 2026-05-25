@@ -13,3 +13,15 @@ JSON que entrega con conexiones:
     "nombreBodega": "Bodega Temuco"
 }
 ```
+
+JSON que entrega sin conexiones: 
+```json
+{
+    "activa": true,
+    "capacidadMax": 230,
+    "capacidadOcupada": null,
+    "direccionSucursal": null,
+    "idBodega": 3,
+    "nombreBodega": "Bodega Concepcion"
+}
+```

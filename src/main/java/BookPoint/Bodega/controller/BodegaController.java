@@ -66,4 +66,13 @@ public class BodegaController {
         }
         return new ResponseEntity<>("Bodega con id " + id + " no existe", HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("listar_con_capacidad")
+    public ResponseEntity<?> listarBodegasCapacidad() {
+        List<BodegaDTO> bodegas = bodegaService.listarBodegasDTO();
+        if (bodegas.isEmpty()) {
+            return new ResponseEntity<>("No existen bodegas registradas", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(bodegas, HttpStatus.OK);
+    }
 }
