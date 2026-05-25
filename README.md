@@ -3,6 +3,7 @@
 Funcionando conexion con MS Inventario y MS Sucursal
 
 JSON que entrega con conexiones:
+```json
 {
     "activa": true,
     "capacidadMax": 100,
@@ -11,3 +12,4 @@ JSON que entrega con conexiones:
     "idBodega": 1,
     "nombreBodega": "Bodega Temuco"
 }
+```
