@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 
 import BookPoint.Bodega.model.Bodega;
 import BookPoint.Bodega.model.BodegaDTO;
-import BookPoint.Bodega.model.InventarioDTO;
 import BookPoint.Bodega.model.SucursalDTO;
 import BookPoint.Bodega.repository.BodegaRepository;
 import jakarta.transaction.Transactional;
@@ -72,20 +71,6 @@ public class BodegaService {
             System.out.println("*************************");
         }
     // Conexion a Inventario
-        // try {
-        //     String urlInventario = "http://localhost:8091/api/v1/inventario/" + bodega.getIdInventario();
-        //     InventarioDTO inventario = restTemplate.getForObject(urlInventario, InventarioDTO.class);
-        //     if (inventario != null) {
-        //         dto.setCapacidadOcupada(inventario.getStockDisponible());
-        //         System.out.println("*************************");
-        //         System.out.println("Inventario encontrado: " + inventario);
-        //         System.out.println("*************************");
-        //     }
-        // } catch (Exception e) {
-        //     System.out.println("*************************");
-        //     System.out.println("Inventario no disponible: " + e.getMessage());
-        //     System.out.println("*************************");
-        // }
             try {
                 String urlInventario = "http://localhost:8091/api/v1/inventario/totalStock";
                 String totalStock = restTemplate.getForObject(urlInventario, String.class);
